@@ -25,13 +25,6 @@ public class AdventureTest {
     count = 0;
   }
 
-  @Test
-  public void testForTest() {
-    Adventure game = new Adventure();
-    assertEquals("test", game.forTest());
-    count += 44;
-  }
-
   /**
    * Helper method for testing directions.
    * @param row
@@ -42,41 +35,41 @@ public class AdventureTest {
    * @param cantgo
    * @param steps
    */
-//  private void testDirection(int row, int column, String direction, int limit,
-//                             String cango, String cantgo, List<Integer> steps) {
-//    Adventure game = new Adventure();
-//    game.setLocation(row, column);
-//    String expected = null;
-//    String actual = null;
-//
-//    String input = String.format("go %s\n", direction);
-//    for (int step: steps) {
-//      actual = game.eval(input);
-//      expected = String.format(
-//        cango, direction, step
-//      );
-//      assertEquals(expected, actual);
-//      count++;
-//    }
-//
-//    actual = game.eval(input);
-//    expected = String.format(
-//      cantgo,
-//      direction, steps.get(steps.size()-1));
-//    assertEquals(expected, actual);
-//  }
+  private void testDirection(int row, int column, String direction, int limit,
+                             String cango, String cantgo, List<Integer> steps) {
+    Adventure game = new Adventure();
+    game.setLocation(row, column);
+    String expected = null;
+    String actual = null;
+
+    String input = String.format("go %s\n", direction);
+    for (int step: steps) {
+      actual = game.eval(input);
+      expected = String.format(
+        cango, direction, step
+      );
+      assertEquals(expected, actual);
+      count++;
+    }
+
+    actual = game.eval(input);
+    expected = String.format(
+      cantgo,
+      direction, steps.get(steps.size()-1));
+    assertEquals(expected, actual);
+  }
   /**
    *
    */
-//  @Test
-//  public void testGoSouth() {
-//    List<Integer> steps = IntStream.range(1,Adventure.MAX_ROW).boxed().collect(Collectors.toList());
-//    testDirection(0,0,"south", Adventure.MAX_ROW,
-//      "Moving %s...\nYou are at location %s,0\n",
-//      "You can't go that far %s.\nYou are at location %s,0\n",
-//      steps
-//    );
-//  }
+  @Test
+  public void testGoSouth() {
+    List<Integer> steps = IntStream.range(1,Adventure.MAX_ROW).boxed().collect(Collectors.toList());
+    testDirection(0,0,"south", Adventure.MAX_ROW,
+      "Moving %s...\nYou are at location %s,0\n",
+      "You can't go that far %s.\nYou are at location %s,0\n",
+      steps
+    );
+  }
 
   /**
    *
