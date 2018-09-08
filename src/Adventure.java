@@ -1,16 +1,28 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 
+/**
+ * A class for the Adventure Game.
+ */
 public class Adventure {
 
+  /** total rows of the adventure map. */
   public static final int MAX_ROW = 5;
+  /** total columns of the adventure map. */
   public static final int MAX_COL = 5;
 
+  /** current located in which row. */
   private int currentRow;
+  /** current located in which columns. */
   private int currentCol;
-  private boolean quitGame;
-  ArrayList<String> inventory = new ArrayList<String>();
+  /** game finish sign, default is false. */
+  private boolean isGameFinished;
+  /** inventory of carrying. */
+  private ArrayList<String> inventory = new ArrayList<String>();
 
+  /**
+   * default constructor.
+   */
   Adventure() {
     inventory.add("brass lantern");
     inventory.add("rope");
@@ -18,86 +30,127 @@ public class Adventure {
     inventory.add("staff");
   }
 
-  public void setLocation(int row, int col) {
+  /**
+   * location setter.
+   * @param row row coordinate of location
+   * @param col column coordinate of location
+   */
+  public void setLocation(final int row, final int col) {
     currentRow = row;
     currentCol = col;
   }
 
+  /**
+   * location getter.
+   * @return return a message string
+   */
   public String getLocation() {
     return "You are at location " + currentRow + "," + currentCol;
   }
 
+  /**
+   * check if the game is finished.
+   * @return if the game finished, return true
+   */
   public boolean checkQuit() {
-    return quitGame;
+    return isGameFinished;
   }
 
-  public void setQuit() {
-    quitGame = true;
+  /**
+   * set the game finished flag.
+   */
+  public void quitGame() {
+    isGameFinished = true;
   }
 
+  /**
+   * get all items in the inventory.
+   * @return a message string
+   */
   public String getInventory() {
-    return "You are carrying:\n" + String.join("\n", inventory);
+    return "You are carrying:\n"
+      + String.join("\n", inventory);
   }
 
-  public String eval(String inputStr) {
+  /**
+   * evaluate each commands and take responding action.
+   * @param inputStr a line of string as a command
+   * @return a response string.
+   */
+  public String eval(final String inputStr) {
     if (inputStr != null) {
-      String[] arrOfInput = inputStr.trim().split("\\s+", 2);
-      if (arrOfInput.length > 0 && arrOfInput[0].length() > 0) {
-        if (arrOfInput[0].toLowerCase().charAt(0) == 'g') {
-          if (arrOfInput.length > 1 && arrOfInput[1].length() > 0) {  //check if second argus is available
-            switch (arrOfInput[1].toLowerCase().charAt(0)) {
-              case 'e':
+      //split the input command line into two arguments
+      String[] split = inputStr.trim().split("\\s+", 2);
+      //check if first argument is available
+      if (split.length > 0 && split[0].length() > 0) {
+        // detect 'go' command
+        if (split[0].toLowerCase().charAt(0) == 'g') {
+          //check if second argument is available
+          if (split.length > 1 && split[1].length() > 0) {
+            switch (split[1].toLowerCase().charAt(0)) {
+              case 'e':  // 'go east'
+                // check if this move inside the map boundary
                 if (currentCol < MAX_COL - 1) {
                   currentCol++;
                   return "Moving east...\n" + getLocation() + "\n";
+                } else {
+                  return "You can't go that far east.\n"
+                    + getLocation()
+                    + "\n";
                 }
-                else {
-                  return "You can't go that far east.\n" + getLocation() + "\n";
-                }
-              case 'w':
+              case 'w':  // 'go west'
+                // check if this move inside the map boundary
                 if (currentCol > 0) {
                   currentCol--;
-                  return "Moving west...\n" + getLocation() + "\n";
+                  return "Moving west...\n"
+                    + getLocation() + "\n";
+                } else {
+                  return "You can't go that far west.\n"
+                    + getLocation()
+                    + "\n";
                 }
-                else {
-                  return "You can't go that far west.\n" + getLocation() + "\n";
-                }
-              case 's':
+              case 's':  // 'go south'
+                // check if this move inside the map boundary
                 if (currentRow < MAX_ROW - 1) {
                   currentRow++;
                   return "Moving south...\n" + getLocation() + "\n";
+                } else {
+                  return "You can't go that far south.\n"
+                    + getLocation() + "\n";
                 }
-                else {
-                  return "You can't go that far south.\n" + getLocation() + "\n";
-                }
-              case 'n':
+              case 'n':  // 'go north'
+                // check if this move inside the map boundary
                 if (currentRow > 0) {
                   currentRow--;
-                  return "Moving north...\n" + getLocation() + "\n";
+                  return "Moving north...\n"
+                    + getLocation() + "\n";
+                } else {
+                  return "You can't go that far north.\n"
+                    + getLocation() + "\n";
                 }
-                else {
-                  return "You can't go that far north.\n" + getLocation() + "\n";
-                }
-              default:
-                return "You can't go that way.\n" + getLocation() + "\n";
+              default:  // error direction message
+                return "You can't go that way.\n"
+                  + getLocation() + "\n";
             }
-          }
-          else {
+          } else {
+          // second argument is not provided
             return getLocation() + "\n";
           }
-        }
-        else if (arrOfInput[0].toLowerCase().charAt(0) == 'i') {
+        } else if (split[0].toLowerCase().charAt(0) == 'i') {
+        // detect 'inventory' command
           return getInventory() + "\n" + getLocation() + "\n";
-        }
-        else if (arrOfInput[0].toLowerCase().charAt(0) == 'q') {
-          setQuit();
+        } else if (split[0].toLowerCase().charAt(0) == 'q') {
+        // detect 'quit' command
+          quitGame();
           return "Farewell\n" + getLocation() + "\n";
+        } else {
+        // handle invalid command
+          return "Invalid command: "
+            + split[0] + "\n"
+            + getLocation() + "\n";
         }
-        else {
-          return "Invalid command: " + arrOfInput[0] + "\n"+ getLocation() + "\n";
-        }
-      }
-      else {
+      } else {
+      // handle void input
         return "Invalid input\n";
       }
     }
@@ -105,10 +158,14 @@ public class Adventure {
     return null;
   }
 
-  public static void main(String[] args) {
-    Scanner scanner = new Scanner(System. in);
+  /**
+   * main function.
+   * @param args arguments from the command line
+   */
+  public static void main(final String[] args) {
+    Scanner scanner = new Scanner(System.in);
     Adventure newAdventure = new Adventure();
-    while (! newAdventure.checkQuit()) {
+    while (!newAdventure.checkQuit()) {
       System.out.print("> ");
       String input = scanner.nextLine();
       System.out.printf(newAdventure.eval(input));
