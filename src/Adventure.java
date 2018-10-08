@@ -1,5 +1,4 @@
 import java.util.Scanner;
-import java.util.ArrayList;
 
 /**
  * A class for the Adventure Game.
@@ -17,17 +16,21 @@ public class Adventure {
   private int currentCol;
   /** game finish sign, default is false. */
   private boolean isGameFinished;
-  /** inventory of carrying. */
-  private ArrayList<String> inventory = new ArrayList<String>();
+
+  private GameChar gameChar;
+
+  private Map gameMap;
 
   /**
    * default constructor.
    */
-  Adventure() {
-    inventory.add("brass lantern");
-    inventory.add("rope");
-    inventory.add("rations");
-    inventory.add("staff");
+  Adventure(String mapFile) {
+    try {
+      gameMap = new Map(mapFile);
+    } catch (Exception e) {
+      System.out.println("Reading map file failed.");
+    }
+    gameChar = new GameChar();
   }
 
   /**
@@ -61,15 +64,6 @@ public class Adventure {
    */
   public void quitGame() {
     isGameFinished = true;
-  }
-
-  /**
-   * get all items in the inventory.
-   * @return a message string
-   */
-  public String getInventory() {
-    return "You are carrying:\n"
-      + String.join("\n", inventory);
   }
 
   /**
@@ -138,7 +132,7 @@ public class Adventure {
           }
         } else if (split[0].toLowerCase().charAt(0) == 'i') {
         // detect 'inventory' command
-          return getInventory() + "\n" + getLocation() + "\n";
+          return gameChar.getInventory() + "\n" + getLocation() + "\n";
         } else if (split[0].toLowerCase().charAt(0) == 'q') {
         // detect 'quit' command
           quitGame();
@@ -163,8 +157,12 @@ public class Adventure {
    * @param args arguments from the command line
    */
   public static void main(final String[] args) {
+    if (args.length < 1) {
+      System.out.println("Usage: java Adventure mapFileName");
+      return;
+    }
     Scanner scanner = new Scanner(System.in);
-    Adventure newAdventure = new Adventure();
+    Adventure newAdventure = new Adventure(args[0]);
     while (!newAdventure.checkQuit()) {
       System.out.print("> ");
       String input = scanner.nextLine();
