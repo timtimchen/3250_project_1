@@ -5,15 +5,6 @@ import java.util.Scanner;
  */
 public class Adventure {
 
-  /** total rows of the adventure map. */
-  public static final int MAX_ROW = 5;
-  /** total columns of the adventure map. */
-  public static final int MAX_COL = 5;
-
-  /** current located in which row. */
-  private int currentRow;
-  /** current located in which columns. */
-  private int currentCol;
   /** game finish sign, default is false. */
   private boolean isGameFinished;
 
@@ -31,24 +22,6 @@ public class Adventure {
       System.out.println("Reading map file failed.");
     }
     gameChar = new GameChar();
-  }
-
-  /**
-   * location setter.
-   * @param row row coordinate of location
-   * @param col column coordinate of location
-   */
-  public void setLocation(final int row, final int col) {
-    currentRow = row;
-    currentCol = col;
-  }
-
-  /**
-   * location getter.
-   * @return return a message string
-   */
-  public String getLocation() {
-    return "You are at location " + currentRow + "," + currentCol;
   }
 
   /**
