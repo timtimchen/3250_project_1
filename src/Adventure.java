@@ -8,14 +8,17 @@ public class Adventure {
   /** game finish sign, default is false. */
   private boolean isGameFinished;
 
+  /** game Character object. */
   private GameChar gameChar;
 
+  /** game Map object. */
   private Map gameMap;
 
   /**
    * default constructor.
+   * @param mapFile a path of map text file
    */
-  Adventure(String mapFile) {
+  Adventure(final String mapFile) {
     try {
       gameMap = new Map(mapFile);
     } catch (Exception e) {
@@ -54,67 +57,24 @@ public class Adventure {
         if (split[0].toLowerCase().charAt(0) == 'g') {
           //check if second argument is available
           if (split.length > 1 && split[1].length() > 0) {
-            switch (split[1].toLowerCase().charAt(0)) {
-              case 'e':  // 'go east'
-                // check if this move inside the map boundary
-                if (currentCol < MAX_COL - 1) {
-                  currentCol++;
-                  return "Moving east...\n" + getLocation() + "\n";
-                } else {
-                  return "You can't go that far east.\n"
-                    + getLocation()
-                    + "\n";
-                }
-              case 'w':  // 'go west'
-                // check if this move inside the map boundary
-                if (currentCol > 0) {
-                  currentCol--;
-                  return "Moving west...\n"
-                    + getLocation() + "\n";
-                } else {
-                  return "You can't go that far west.\n"
-                    + getLocation()
-                    + "\n";
-                }
-              case 's':  // 'go south'
-                // check if this move inside the map boundary
-                if (currentRow < MAX_ROW - 1) {
-                  currentRow++;
-                  return "Moving south...\n" + getLocation() + "\n";
-                } else {
-                  return "You can't go that far south.\n"
-                    + getLocation() + "\n";
-                }
-              case 'n':  // 'go north'
-                // check if this move inside the map boundary
-                if (currentRow > 0) {
-                  currentRow--;
-                  return "Moving north...\n"
-                    + getLocation() + "\n";
-                } else {
-                  return "You can't go that far north.\n"
-                    + getLocation() + "\n";
-                }
-              default:  // error direction message
-                return "You can't go that way.\n"
-                  + getLocation() + "\n";
-            }
+            return gameChar.go(split[1].toLowerCase().charAt(0), gameMap);
           } else {
           // second argument is not provided
-            return getLocation() + "\n";
+            return gameChar.locationInfo(gameMap) + "\n";
           }
         } else if (split[0].toLowerCase().charAt(0) == 'i') {
         // detect 'inventory' command
-          return gameChar.getInventory() + "\n" + getLocation() + "\n";
+          return gameChar.getInventory() + "\n"
+            + gameChar.locationInfo(gameMap) + "\n";
         } else if (split[0].toLowerCase().charAt(0) == 'q') {
         // detect 'quit' command
           quitGame();
-          return "Farewell\n" + getLocation() + "\n";
+          return "Farewell\n" + gameChar.locationInfo(gameMap) + "\n";
         } else {
         // handle invalid command
           return "Invalid command: "
             + split[0] + "\n"
-            + getLocation() + "\n";
+            + gameChar.locationInfo(gameMap);
         }
       } else {
       // handle void input
